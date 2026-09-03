@@ -1,0 +1,93 @@
+/**
+ * Inworld AI client — text-to-speech narration.
+ *
+ * Confirmed against docs.inworld.ai (Nov 2026):
+ *   POST https://api.inworld.ai/tts/v1/voice
+ *   Authorization: Basic <INWORLD_API_KEY>  (the key itself is already the
+ *   base64 credential Inworld issues — pass it through as-is, don't
+ *   base64-encode it again)
+ *
+ * Response has no duration field, so we estimate it from word count.
+ */
+
+import { writeFile, mkdir } from "fs/promises";
+import path from "path";
+import { nanoid } from "nanoid";
+
+const INWORLD_API_BASE = process.env.INWORLD_API_BASE ?? "https://api.inworld.ai/tts/v1";
+const DEFAULT_VOICE_ID = process.env.INWORLD_VOICE_ID ?? "Dennis";
+const DEFAULT_MODEL_ID = process.env.INWORLD_MODEL_ID ?? "inworld-tts-1.5-max";
+
+function getApiKey(): string {
+  const key = process.env.INWORLD_API_KEY;
+  if (!key) throw new Error("INWORLD_API_KEY is not set");
+  return key;
+}
+
+export interface SynthesizeInput {
+  text: string;
+  voiceId?: string;
+}
+
+export interface SynthesizeResult {
+  audioUrl: string;
+  durationSec: number;
+}
+
+export async function synthesizeSpeech(input: SynthesizeInput): Promise<SynthesizeResult> {
+  const res = await fetch(`${INWORLD_API_BASE}/voice`, {
+    method: "POST",
+    headers: {
+      Authorization: `Basic ${getApiKey()}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      text: input.text.slice(0, 2000),
+      voiceId: input.voiceId ?? DEFAULT_VOICE_ID,
+      modelId: DEFAULT_MODEL_ID,
+      audioConfig: {
+        audioEncoding: "MP3",
+        sampleRateHertz: 48000,
+      },
+    }),
+  });
+
+  if (!res.ok) {
+    throw new Error(`Inworld synth failed: ${res.status} ${await res.text()}`);
+  }
+
+  const data = await res.json();
+  const audioBuffer = Buffer.from(data.audioContent, "base64");
+  const audioUrl = await saveAudioBuffer(audioBuffer);
+
+  return {
+    audioUrl,
+    durationSec: estimateDurationFromText(input.text),
+  };
+}
+
+/** GET /voices to discover real voiceIds — useful for picking INWORLD_VOICE_ID. */
+export async function listVoices(): Promise<Array<{ voiceId: string; displayName: string }>> {
+  const res = await fetch(`${INWORLD_API_BASE}/voices`, {
+    headers: { Authorization: `Basic ${getApiKey()}` },
+  });
+  if (!res.ok) {
+    throw new Error(`Inworld list voices failed: ${res.status} ${await res.text()}`);
+  }
+  const { voices } = await res.json();
+  return voices;
+}
+
+async function saveAudioBuffer(buffer: Buffer): Promise<string> {
+  const dir = path.join(process.cwd(), "public", "media", "audio");
+  await mkdir(dir, { recursive: true });
+  const fileName = `${nanoid()}.mp3`;
+  await writeFile(path.join(dir, fileName), buffer);
+  return `/media/audio/${fileName}`;
+}
+
+/** Inworld doesn't return duration — estimate at ~150 words/min. */
+function estimateDurationFromText(text: string): number {
+  const words = text.trim().split(/\s+/).length;
+  return Math.max(1.5, (words / 150) * 60);
+}

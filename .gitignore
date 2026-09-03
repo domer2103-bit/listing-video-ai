@@ -30,11 +30,17 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
+# env files — keep the template tracked, never the real secrets
 .env*
+!.env.example
 
 # vercel
 .vercel
+
+# generated project data & media (scraped listings, audio, video, api keys live in .env)
+/data/projects/*.json
+/public/media/**
+!/public/media/.gitkeep
 
 # typescript
 *.tsbuildinfo
