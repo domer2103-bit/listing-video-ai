@@ -1,0 +1,12 @@
+node_modules
+.next
+.remotion-bundle
+data
+public/media/video
+public/media/uploads
+public/media/audio
+public/media/work
+public/media/final
+.env*
+!.env.example
+.git
