@@ -17,7 +17,7 @@ export async function POST(_request: Request, { params }: { params: Promise<{ id
 
   try {
     for (const scene of project.scenes) {
-      const { audioUrl, durationSec } = await synthesizeSpeech({ text: scene.narration });
+      const { audioUrl, durationSec } = await synthesizeSpeech({ text: scene.narration, voiceId: project.voiceId });
       scene.narrationAudioUrl = audioUrl;
       scene.narrationDurationSec = durationSec;
     }

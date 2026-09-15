@@ -1,50 +1,32 @@
-import { ListingData, Scene } from "../types";
-
-const MOTION_PHRASING: Record<Scene["cameraMotion"], string> = {
-  "slow-push-in": "a slow push-in, gently moving closer",
-  "pan-left": "a smooth pan from right to left",
-  "pan-right": "a smooth pan from left to right",
-  "orbit-left": "a subtle orbit to the left, as if walking around the space",
-  "orbit-right": "a subtle orbit to the right, as if walking around the space",
-  "drone-rise": "a gentle upward drone-style rise",
-  "zoom-in": "a fast, dramatic zoom inward, as if rushing down from high altitude",
-  static: "minimal motion, a barely-perceptible slow drift",
-};
+import { ListingData } from "../types";
 
 /**
- * Builds the kie.ai (Kling) image-to-video prompt for one scene.
- *
- * Kling's kie.ai endpoint has no separate negative_prompt field, so
- * constraints that would normally go there are folded into the prompt
- * itself as explicit "do not" instructions.
+ * Prompt for the Veo3 first/last-frame zoom clip: whole-earth view (first
+ * frame) descending into a close-up satellite view of the property (last
+ * frame). Anchoring both endpoints keeps the model interpolating between
+ * two real images instead of freely hallucinating an open-ended "zoom in".
  */
-export function buildVideoPrompt(scene: Scene, listing: ListingData): string {
-  if (scene.kind === "establishing") {
-    return [
-      `Aerial/street-level real estate establishing shot near ${listing.address || "the property"}.`,
-      `Camera performs ${MOTION_PHRASING[scene.cameraMotion]} over 4 seconds.`,
-      `Photorealistic, natural lighting, no added people, no text, no logos, no watermarks.`,
-      `Preserve the original geography and buildings exactly as shown in the source image.`,
-      `Do not distort geometry, invent structures, add floating objects, or shift the lighting unnaturally.`,
-    ].join(" ");
-  }
-
-  const style = inferPropertyStyle(listing);
+export function buildEarthZoomPrompt(listing: ListingData): string {
   return [
-    `Photorealistic real estate ${scene.roomType ?? "interior"} shot of a ${style} home.`,
-    `Camera performs ${MOTION_PHRASING[scene.cameraMotion]} over 4 seconds, smooth and subtle.`,
-    `Natural lighting matching the source photo, no added people, no text, no logos, no watermarks.`,
-    `Preserve the original architecture, furniture and layout exactly as shown in the source image.`,
-    `Real-estate listing commercial quality, stable motion.`,
-    `Do not distort geometry, invent extra rooms, add floating objects, or shift the lighting unnaturally.`,
+    `Cinematic aerial dive: camera starts from high orbital altitude looking down at planet Earth, then performs one continuous, smooth, accelerating descent through the atmosphere and clouds, diving toward a residential property near ${listing.address || "the property"}, ending in a close-up aerial view directly above the building shown in the final frame.`,
+    `Photorealistic satellite and aerial cinematography, natural lighting, no added people, no text, no logos, no watermarks.`,
+    `Smooth continuous motion throughout, no jump cuts, no sudden stops, no orbiting or spinning — a straight descent only.`,
+    `Preserve the real geography and buildings shown in the source images exactly, do not invent structures or distort landmasses.`,
   ].join(" ");
 }
 
-function inferPropertyStyle(listing: ListingData): string {
-  const text = `${listing.address} ${listing.description}`.toLowerCase();
-  if (text.includes("victorian")) return "Victorian";
-  if (text.includes("modern") || text.includes("new build")) return "modern";
-  if (text.includes("period")) return "period";
-  if (text.includes("apartment") || text.includes("flat")) return "contemporary apartment";
-  return "well-presented";
+/**
+ * Prompt for the kie.ai orbit clip that picks up where the Veo3 earth-zoom
+ * descent leaves off — a real, detailed satellite close-up (not a flat
+ * low-zoom map), which is the kind of shot Kling handles reliably.
+ */
+export function buildSatelliteOrbitPrompt(listing: ListingData): string {
+  return [
+    `Aerial satellite view of a residential property near ${listing.address || "the property"}.`,
+    `Camera performs a slow, smooth orbit, continuously circling the property at a fixed low altitude while keeping it centered in frame.`,
+    `Photorealistic, natural lighting matching the source image, no added people, no text, no logos, no watermarks.`,
+    `Preserve the original architecture, streets and surrounding layout exactly as shown in the source image.`,
+    `Real-estate listing commercial quality, stable smooth motion, no zooming, no wobble.`,
+    `Do not distort geometry, invent extra buildings, add floating objects, or shift the lighting unnaturally.`,
+  ].join(" ");
 }

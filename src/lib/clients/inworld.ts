@@ -7,12 +7,16 @@
  *   base64 credential Inworld issues — pass it through as-is, don't
  *   base64-encode it again)
  *
- * Response has no duration field, so we estimate it from word count.
+ * Response has no duration field, so we measure the actual saved audio
+ * file with ffprobe rather than estimating from word count — a words/min
+ * guess was off by up to ~2s per scene in testing, enough to pick too
+ * short a kie.ai clip duration downstream.
  */
 
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 import { nanoid } from "nanoid";
+import ffmpeg from "fluent-ffmpeg";
 
 const INWORLD_API_BASE = process.env.INWORLD_API_BASE ?? "https://api.inworld.ai/tts/v1";
 const DEFAULT_VOICE_ID = process.env.INWORLD_VOICE_ID ?? "Dennis";
@@ -59,11 +63,9 @@ export async function synthesizeSpeech(input: SynthesizeInput): Promise<Synthesi
   const data = await res.json();
   const audioBuffer = Buffer.from(data.audioContent, "base64");
   const audioUrl = await saveAudioBuffer(audioBuffer);
+  const durationSec = await getAudioDurationSec(path.join(process.cwd(), "public", audioUrl));
 
-  return {
-    audioUrl,
-    durationSec: estimateDurationFromText(input.text),
-  };
+  return { audioUrl, durationSec };
 }
 
 /** GET /voices to discover real voiceIds — useful for picking INWORLD_VOICE_ID. */
@@ -86,8 +88,11 @@ async function saveAudioBuffer(buffer: Buffer): Promise<string> {
   return `/media/audio/${fileName}`;
 }
 
-/** Inworld doesn't return duration — estimate at ~150 words/min. */
-function estimateDurationFromText(text: string): number {
-  const words = text.trim().split(/\s+/).length;
-  return Math.max(1.5, (words / 150) * 60);
+function getAudioDurationSec(filePath: string): Promise<number> {
+  return new Promise((resolve, reject) => {
+    ffmpeg.ffprobe(filePath, (err, data) => {
+      if (err) return reject(err);
+      resolve(data.format.duration ?? 0);
+    });
+  });
 }

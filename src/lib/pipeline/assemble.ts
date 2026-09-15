@@ -48,6 +48,7 @@ export async function assembleFinalVideo(project: Project): Promise<string> {
       clipPath,
       audioPath,
       onScreenText: canDrawtext ? scene.onScreenText : undefined,
+      introSilenceSec: scene.introSilenceSec,
       outPath,
     });
 
@@ -90,24 +91,84 @@ function toLocalPath(publicUrl: string): string {
   return path.join(process.cwd(), "public", publicUrl);
 }
 
-function muxSceneClip(opts: {
+function getDurationSec(filePath: string): Promise<number> {
+  return new Promise((resolve, reject) => {
+    ffmpeg.ffprobe(filePath, (err, data) => {
+      if (err) return reject(err);
+      resolve(data.format.duration ?? 0);
+    });
+  });
+}
+
+/**
+ * kie.ai only offers 5s or 10s clips, which doesn't always exactly match
+ * narration length. Rather than trimming narration short with `-shortest`
+ * (which cuts voiceover off mid-sentence when the clip is shorter than the
+ * audio), freeze-extend the clip's last frame to cover the full narration,
+ * then trim to the audio's exact length.
+ *
+ * `introSilenceSec` (satellite establishing shot only) delays narration
+ * onset so it starts when the orbit footage begins instead of overlapping
+ * the silent zoom-in — padding accounts for the delayed audio's later end.
+ */
+async function muxSceneClip(opts: {
   clipPath: string;
   audioPath: string;
   onScreenText?: string;
+  introSilenceSec?: number;
   outPath: string;
 }): Promise<void> {
+  const [videoDur, audioDur] = await Promise.all([
+    getDurationSec(opts.clipPath),
+    getDurationSec(opts.audioPath),
+  ]);
+  const delaySec = opts.introSilenceSec ?? 0;
+  const audioEndSec = delaySec + audioDur;
+  const padSec = Math.max(0, audioEndSec - videoDur + 0.2);
+
   return new Promise((resolve, reject) => {
     let command = ffmpeg(opts.clipPath).input(opts.audioPath);
 
+    const videoFilters: string[] = [];
+    if (padSec > 0) {
+      videoFilters.push(`tpad=stop_mode=clone:stop_duration=${padSec.toFixed(2)}`);
+    }
     if (opts.onScreenText) {
-      const safeText = opts.onScreenText.replace(/'/g, "\\'").replace(/:/g, "\\:");
-      command = command.videoFilters(
+      // ffmpeg's filtergraph mini-language: a backslash-escaped quote
+      // inside an already-open quoted string does NOT produce a literal
+      // apostrophe — it prematurely closes the string, leaving everything
+      // after it (commas, colons) parsed as filtergraph syntax instead of
+      // text. The documented technique is to close the quote, escape a
+      // literal quote outside it, then reopen: '...'\''...'
+      const safeText = opts.onScreenText.replace(/'/g, "'\\''").replace(/:/g, "\\:");
+      videoFilters.push(
         `drawtext=text='${safeText}':fontcolor=white:fontsize=48:box=1:boxcolor=black@0.4:boxborderw=20:x=(w-text_w)/2:y=h-140`
       );
     }
+    if (videoFilters.length > 0) {
+      command = command.videoFilters(videoFilters);
+    }
+
+    if (delaySec > 0) {
+      command = command.audioFilters([`adelay=${Math.round(delaySec * 1000)}:all=1`]);
+    }
 
     command
-      .outputOptions(["-shortest", "-c:v libx264", "-c:a aac", "-pix_fmt yuv420p"])
+      .outputOptions([
+        // Explicit stream mapping is required: Remotion embeds a silent
+        // stereo audio track in its renders even with no <Audio> in the
+        // composition, and without -map, ffmpeg's automatic stream
+        // selection prefers the higher channel-count stream — silently
+        // picking that dead track over the real (mono) narration.
+        "-map",
+        "0:v:0",
+        "-map",
+        "1:a:0",
+        "-shortest",
+        "-c:v libx264",
+        "-c:a aac",
+        "-pix_fmt yuv420p",
+      ])
       .output(opts.outPath)
       .on("end", () => resolve())
       .on("error", reject)

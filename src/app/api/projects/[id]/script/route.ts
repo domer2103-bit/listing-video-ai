@@ -16,7 +16,7 @@ export async function POST(_request: Request, { params }: { params: Promise<{ id
   await saveProject(project);
 
   try {
-    project.scenes = await generateScenePlan(project.listing);
+    project.scenes = await generateScenePlan(project.listing, project.audience ?? "sale");
     project.status = "scripted";
     project.error = undefined;
   } catch (err) {
