@@ -1,7 +1,11 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 
-export const metadata = {
-  title: "Terms of Service — Online Viewing",
+export const metadata: Metadata = {
+  title: { absolute: "Terms of Service — Online Viewing" },
+  description:
+    "The terms governing your use of Online Viewing, including plans & billing, content ownership, and limitation of liability.",
+  alternates: { canonical: "/terms" },
 };
 
 export default function TermsOfService() {

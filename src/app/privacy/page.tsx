@@ -1,7 +1,11 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 
-export const metadata = {
-  title: "Privacy Policy — Online Viewing",
+export const metadata: Metadata = {
+  title: { absolute: "Privacy Policy — Online Viewing" },
+  description:
+    "How Online Viewing collects, uses, and protects your data, including the third parties we use and your rights under UK data protection law.",
+  alternates: { canonical: "/privacy" },
 };
 
 export default function PrivacyPolicy() {

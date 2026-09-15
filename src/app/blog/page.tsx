@@ -2,10 +2,21 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { getAllPostsMeta, Persona } from "@/lib/blog";
 
-export const metadata: Metadata = {
-  title: "Blog",
-  description: "Guides on AI-narrated property video — for sellers, agents, and Airbnb hosts.",
-};
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}): Promise<Metadata> {
+  const { page: pageParam } = await searchParams;
+  const page = Math.max(1, parseInt(pageParam ?? "1", 10) || 1);
+  const canonical = page > 1 ? `/blog?page=${page}` : "/blog";
+
+  return {
+    title: "Blog",
+    description: "Guides on AI-narrated property video — for sellers, agents, and Airbnb hosts.",
+    alternates: { canonical },
+  };
+}
 
 const PERSONA_STYLE: Record<Persona, { label: string; text: string; bg: string }> = {
   Sellers: { label: "For Sellers", text: "text-[#0F9B7A]", bg: "bg-[#00DEB0]/10" },

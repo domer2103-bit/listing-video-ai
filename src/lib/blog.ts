@@ -20,8 +20,48 @@ export interface BlogPostMeta {
   date: string; // YYYY-MM-DD
 }
 
+export interface FaqItem {
+  question: string;
+  answer: string;
+}
+
 export interface BlogPost extends BlogPostMeta {
   html: string;
+  faqs: FaqItem[];
+}
+
+/** Strips inline Markdown syntax down to plain text — used for FAQPage
+ * JSON-LD, where Google expects plain answer text rather than HTML/MD. */
+function stripInlineMarkdown(text: string): string {
+  return text
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+    .replace(/\*\*([^*]+)\*\*/g, "$1")
+    .replace(/\*([^*]+)\*/g, "$1")
+    .replace(/`([^`]+)`/g, "$1")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+/** Every post has a "## Frequently asked questions" section formatted as
+ * repeated `**Question?**\nAnswer.` pairs (verified across all 30 posts) —
+ * parsed straight from the raw Markdown into FAQPage JSON-LD entries. */
+function extractFaqs(markdown: string): FaqItem[] {
+  const sections = markdown.split(/\n(?=## )/);
+  const faqSection = sections.find((s) => /^## Frequently asked questions/i.test(s.trim()));
+  if (!faqSection) return [];
+
+  const body = faqSection.replace(/^## Frequently asked questions\s*/i, "");
+  const blocks = body.split(/\n\s*\n/).map((b) => b.trim()).filter(Boolean);
+
+  const faqs: FaqItem[] = [];
+  for (const block of blocks) {
+    const match = block.match(/^\*\*(.+?)\*\*\s*\n?([\s\S]*)$/);
+    if (!match) continue;
+    const question = stripInlineMarkdown(match[1]);
+    const answer = stripInlineMarkdown(match[2]);
+    if (question && answer) faqs.push({ question, answer });
+  }
+  return faqs;
 }
 
 async function readPostFile(slug: string): Promise<{ meta: BlogPostMeta; content: string }> {
@@ -57,7 +97,8 @@ export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
   try {
     const { meta, content } = await readPostFile(slug);
     const html = (await marked.parse(content)) as string;
-    return { ...meta, html };
+    const faqs = extractFaqs(content);
+    return { ...meta, html, faqs };
   } catch {
     return null;
   }

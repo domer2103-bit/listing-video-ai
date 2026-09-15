@@ -24,6 +24,7 @@ export const metadata: Metadata = {
     template: "%s — Online Viewing",
   },
   description,
+  alternates: { canonical: "/" },
   openGraph: {
     title: "Online Viewing — AI-narrated property videos",
     description,

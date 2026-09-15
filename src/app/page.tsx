@@ -31,6 +31,23 @@ const STEPS = [
   },
 ];
 
+const WEB_APP_SCHEMA = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "Online Viewing",
+  url: "https://onlineviewing.co.uk",
+  description:
+    "Turn any property listing into a cinematic, AI-narrated promo video — paste a listing link or upload photos, no camera crew, no editor.",
+  applicationCategory: "BusinessApplication",
+  operatingSystem: "Any (web-based)",
+  offers: [
+    { "@type": "Offer", name: "Free", price: "0", priceCurrency: "GBP", url: "https://onlineviewing.co.uk/pricing" },
+    { "@type": "Offer", name: "Starter", price: "19", priceCurrency: "GBP", url: "https://onlineviewing.co.uk/pricing" },
+    { "@type": "Offer", name: "Pro", price: "49", priceCurrency: "GBP", url: "https://onlineviewing.co.uk/pricing" },
+    { "@type": "Offer", name: "Agency", price: "149", priceCurrency: "GBP", url: "https://onlineviewing.co.uk/pricing" },
+  ],
+};
+
 const STAGE_LABELS: Record<string, string> = {
   created: "Created",
   scraping: "Scraping listing…",
@@ -92,6 +109,10 @@ export default function Home() {
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(WEB_APP_SCHEMA) }}
+      />
       <section className="relative overflow-hidden bg-[#1D1B3A] px-6 py-20 sm:py-28">
         <video
           autoPlay

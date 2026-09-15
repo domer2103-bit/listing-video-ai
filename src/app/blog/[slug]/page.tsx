@@ -57,9 +57,52 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
   if (!post) notFound();
 
   const style = PERSONA_STYLE[post.persona] ?? PERSONA_STYLE.General;
+  const url = `https://onlineviewing.co.uk/blog/${post.slug}`;
+  const publishedAt = `${post.date}T00:00:00Z`;
+
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: post.title,
+    description: post.meta_description,
+    image: "https://onlineviewing.co.uk/opengraph-image",
+    datePublished: publishedAt,
+    dateModified: publishedAt,
+    author: { "@type": "Organization", name: "Online Viewing", url: "https://onlineviewing.co.uk" },
+    publisher: {
+      "@type": "Organization",
+      name: "Online Viewing",
+      url: "https://onlineviewing.co.uk",
+      logo: { "@type": "ImageObject", url: "https://onlineviewing.co.uk/opengraph-image" },
+    },
+    mainEntityOfPage: { "@type": "WebPage", "@id": url },
+  };
+
+  const faqSchema =
+    post.faqs.length > 0
+      ? {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: post.faqs.map((faq) => ({
+            "@type": "Question",
+            name: faq.question,
+            acceptedAnswer: { "@type": "Answer", text: faq.answer },
+          })),
+        }
+      : null;
 
   return (
     <main className="flex-1 max-w-3xl mx-auto w-full px-6 py-16 space-y-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
+      {faqSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        />
+      )}
       <div>
         <Link href="/blog" className="text-sm text-[#0F9B7A] underline underline-offset-2">
           ← Back to blog
