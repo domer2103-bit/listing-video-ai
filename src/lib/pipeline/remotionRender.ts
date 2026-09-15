@@ -9,15 +9,25 @@ import { downloadToMedia } from "../media";
 // serializes into slow batches. Lambda renders every scene in parallel on
 // its own instance instead, cutting a multi-minute animate step down to
 // roughly the time of a single scene.
-const region = (process.env.REMOTION_AWS_REGION ?? "eu-west-2") as AwsRegion;
-const functionName = requireEnv("REMOTION_LAMBDA_FUNCTION_NAME");
-const serveUrl = requireEnv("REMOTION_LAMBDA_SERVE_URL");
 const publicBaseUrl = process.env.PUBLIC_BASE_URL ?? "https://onlineviewing.co.uk";
 
 function requireEnv(name: string): string {
   const value = process.env[name];
   if (!value) throw new Error(`${name} is not set — Remotion Lambda rendering requires it`);
   return value;
+}
+
+// Lazy, not module-top-level — `next build` imports every route module
+// during page-data collection regardless of whether it ends up calling
+// this, and the Docker build stage has no runtime env vars (those come
+// from docker-compose's env_file: at container start, not build time).
+// Evaluating these eagerly would fail the build itself.
+function getLambdaConfig() {
+  return {
+    region: (process.env.REMOTION_AWS_REGION ?? "eu-west-2") as AwsRegion,
+    functionName: requireEnv("REMOTION_LAMBDA_FUNCTION_NAME"),
+    serveUrl: requireEnv("REMOTION_LAMBDA_SERVE_URL"),
+  };
 }
 
 /**
@@ -34,6 +44,7 @@ function resolvePublicImageUrl(url: string): string {
 }
 
 async function renderComposition(id: string, inputProps: Record<string, unknown>): Promise<string> {
+  const { region, functionName, serveUrl } = getLambdaConfig();
   const { renderId, bucketName } = await renderMediaOnLambda({
     region,
     functionName,
