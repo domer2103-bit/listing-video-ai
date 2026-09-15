@@ -17,6 +17,39 @@ function getApiKey(): string {
   return key;
 }
 
+/**
+ * Uploads a local file (e.g. an extracted video frame) to kie.ai's file
+ * host and returns a public URL — Kling's image_urls field only accepts
+ * "uploaded file URLs, not file content", no base64/data URIs.
+ * https://docs.kie.ai/file-upload-api/upload-file-stream
+ *
+ * Despite what the docs page says, this endpoint 404s on api.kie.ai — the
+ * actual host (confirmed by testing) is kieai.redpandaai.co.
+ */
+export async function uploadImageToKie(buffer: Buffer, fileName: string): Promise<{ url: string }> {
+  const form = new FormData();
+  form.append("file", new Blob([new Uint8Array(buffer)], { type: "image/jpeg" }), fileName);
+  form.append("uploadPath", "online-viewing");
+  form.append("fileName", fileName);
+
+  const res = await fetch("https://kieai.redpandaai.co/api/file-stream-upload", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${getApiKey()}` },
+    body: form,
+  });
+
+  if (!res.ok) {
+    throw new Error(`kie.ai file upload failed: ${res.status} ${await res.text()}`);
+  }
+
+  const data = await res.json();
+  if (!data.success || !data.data?.downloadUrl) {
+    throw new Error(`kie.ai file upload returned an error: ${JSON.stringify(data)}`);
+  }
+
+  return { url: data.data.downloadUrl };
+}
+
 export interface SubmitVideoJobInput {
   imageUrl: string;
   prompt: string;

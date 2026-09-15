@@ -13,7 +13,12 @@ export async function scrapeGeneric(url: string): Promise<ListingData> {
     headers: { "User-Agent": "Mozilla/5.0 (compatible; ListingVideoBot/1.0)" },
   });
   if (!res.ok) {
-    throw new Error(`Failed to fetch listing page: ${res.status}`);
+    if (res.status === 403 || res.status === 429) {
+      throw new Error(
+        `This site is blocking automated access (HTTP ${res.status}) — this isn't a bad URL, the site itself refuses non-browser requests. Try a Rightmove link instead, or use the photo-upload flow.`
+      );
+    }
+    throw new Error(`Failed to fetch listing page: HTTP ${res.status}`);
   }
   const html = await res.text();
   const $ = cheerio.load(html);

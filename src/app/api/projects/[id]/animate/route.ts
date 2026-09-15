@@ -1,10 +1,17 @@
 import { NextResponse } from "next/server";
 import { getProject, saveProject } from "@/lib/store";
-import { submitImageToVideoJob } from "@/lib/clients/kie";
-import { buildVideoPrompt } from "@/lib/pipeline/videoPrompt";
+import { animateScene } from "@/lib/pipeline/animateScene";
+import { getUser } from "@/lib/userStore";
+import { getPlan } from "@/lib/plans";
+import { mapWithConcurrency } from "@/lib/pipeline/concurrency";
 
-/** Kicks off a kie.ai animation job per scene. These run async — poll
- * GET /api/projects/[id]/animate/status to check progress. */
+/** Interior shots and (on plans without the AI shot) the establishing shot
+ * all render locally and synchronously via Remotion — each one spawns its
+ * own headless Chromium + ffmpeg process, so they're capped to
+ * ANIMATE_CONCURRENCY at a time rather than launched all at once. Only the
+ * satellite establishing shot on plans with AI enabled kicks off async
+ * kie.ai/Veo jobs — poll GET /api/projects/[id]/animate/status for those. */
+const ANIMATE_CONCURRENCY = Number(process.env.ANIMATE_CONCURRENCY ?? 2);
 export async function POST(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const project = await getProject(id);
@@ -15,20 +22,19 @@ export async function POST(_request: Request, { params }: { params: Promise<{ id
     return NextResponse.json({ error: "Project has no scenes yet — run /script first" }, { status: 400 });
   }
 
+  // Projects with no email attached predate this gate or were created out
+  // of band (internal tooling) — default to allowed rather than silently
+  // downgrading output for a case the real user-facing flows never hit,
+  // since both now always attach an email.
+  const user = project.email ? await getUser(project.email) : null;
+  const allowAiEstablishingShot = user ? getPlan(user.plan).aiEstablishingShot : true;
+
   project.status = "animating";
   await saveProject(project);
 
   try {
-    await Promise.all(
-      project.scenes.map(async (scene) => {
-        const { jobId } = await submitImageToVideoJob({
-          imageUrl: scene.sourceImageUrl,
-          prompt: buildVideoPrompt(scene, project.listing!),
-          durationSec: "5",
-        });
-        scene.videoJobId = jobId;
-        scene.videoStatus = "processing";
-      })
+    await mapWithConcurrency(project.scenes, ANIMATE_CONCURRENCY, (scene) =>
+      animateScene(scene, project.listing!, { allowAiEstablishingShot })
     );
     project.error = undefined;
   } catch (err) {

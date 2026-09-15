@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getProject, saveProject } from "@/lib/store";
-import { submitImageToVideoJob } from "@/lib/clients/kie";
-import { buildVideoPrompt } from "@/lib/pipeline/videoPrompt";
+import { animateScene } from "@/lib/pipeline/animateScene";
+import { getUser } from "@/lib/userStore";
+import { getPlan } from "@/lib/plans";
 
-/** Resubmits a single failed/pending scene to kie.ai, without re-submitting
- * (and re-billing) scenes that already succeeded. Body: { sceneId: string }. */
+/** Resubmits a single failed/pending scene (kie.ai job, or a local Remotion
+ * render for establishing shots), without re-submitting (and re-billing)
+ * scenes that already succeeded. Body: { sceneId: string }. */
 export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const project = await getProject(id);
@@ -21,14 +23,15 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     return NextResponse.json({ error: "Scene not found" }, { status: 404 });
   }
 
+  const user = project.email ? await getUser(project.email) : null;
+  const allowAiEstablishingShot = user ? getPlan(user.plan).aiEstablishingShot : true;
+
   try {
-    const { jobId } = await submitImageToVideoJob({
-      imageUrl: scene.sourceImageUrl,
-      prompt: buildVideoPrompt(scene, project.listing),
-      durationSec: "5",
-    });
-    scene.videoJobId = jobId;
-    scene.videoStatus = "processing";
+    scene.zoomJobId = undefined;
+    scene.zoomClipUrl = undefined;
+    scene.orbitClipUrl = undefined;
+    scene.introSilenceSec = undefined;
+    await animateScene(scene, project.listing, { allowAiEstablishingShot });
     scene.videoError = undefined;
     if (project.status === "failed") {
       project.status = "animating";
