@@ -1,7 +1,35 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { Project } from "@/lib/types";
+import { runPipeline as runPipelineSteps } from "@/lib/clientPipeline";
+import { BeforeAfterCard } from "@/components/BeforeAfterCard";
+import { AudienceToggle } from "@/components/AudienceToggle";
+import { useStoredEmail } from "@/lib/useStoredEmail";
+import { EmailGate } from "@/components/EmailGate";
+
+const BEFORE_AFTER_ROOMS = [
+  { label: "Reception room", slug: "reception" },
+  { label: "Drawing room", slug: "drawing-room" },
+  { label: "Kitchen", slug: "kitchen" },
+  { label: "Roof terrace", slug: "roof-terrace" },
+];
+
+const STEPS = [
+  {
+    title: "Paste a link or upload photos",
+    body: "Have a Rightmove or Foxtons listing? Just paste the URL. No link? Upload photos directly instead.",
+  },
+  {
+    title: "Chat with the assistant",
+    body: "It scrapes the listing, asks about anything missing, and lets you pick a narration voice — no forms.",
+  },
+  {
+    title: "Get your video",
+    body: "A fully narrated, AI-animated walkthrough — floorplan-ordered rooms, satellite intro, ready to share.",
+  },
+];
 
 const STAGE_LABELS: Record<string, string> = {
   created: "Created",
@@ -18,79 +46,43 @@ const STAGE_LABELS: Record<string, string> = {
   failed: "Failed",
 };
 
-async function postJSON(url: string) {
-  const res = await fetch(url, { method: "POST" });
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.error ?? `Request to ${url} failed`);
-  return data.project as Project;
-}
-
 export default function Home() {
+  const { email, setEmail, loaded } = useStoredEmail();
   const [sourceUrl, setSourceUrl] = useState("");
   const [project, setProject] = useState<Project | null>(null);
   const [running, setRunning] = useState(false);
   const [log, setLog] = useState<string[]>([]);
+  const [upgradeMessage, setUpgradeMessage] = useState<string | null>(null);
 
   function appendLog(line: string) {
     setLog((prev) => [...prev, line]);
   }
 
-  async function pollAnimation(id: string): Promise<Project> {
-    while (true) {
-      const res = await fetch(`/api/projects/${id}/animate/status`);
-      const data = await res.json();
-      const p = data.project as Project;
-      setProject(p);
-      if (p.status === "animated" || p.status === "failed") return p;
-      await new Promise((r) => setTimeout(r, 4000));
-    }
-  }
-
   async function runPipeline() {
-    if (!sourceUrl) return;
+    if (!sourceUrl || !email) return;
     setRunning(true);
     setLog([]);
     setProject(null);
+    setUpgradeMessage(null);
 
     try {
       appendLog("Creating project & scraping listing…");
-      const created = await fetch("/api/projects", {
+      const res = await fetch("/api/projects", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ sourceUrl }),
-      }).then(async (res) => {
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error ?? "Failed to create project");
-        return data.project as Project;
+        body: JSON.stringify({ sourceUrl, email }),
       });
+      const data = await res.json();
+      if (res.status === 402) {
+        setUpgradeMessage(data.error ?? "You've reached your plan's video limit.");
+        return;
+      }
+      if (!res.ok) throw new Error(data.error ?? "Failed to create project");
+      const created = data.project as Project;
       setProject(created);
       if (created.status === "failed") throw new Error(created.error ?? "Scrape failed");
 
-      appendLog("Writing scene plan & narration script…");
-      let p = await postJSON(`/api/projects/${created.id}/script`);
-      setProject(p);
-      if (p.status === "failed") throw new Error(p.error ?? "Script generation failed");
-
-      appendLog("Synthesizing narration with Inworld AI…");
-      p = await postJSON(`/api/projects/${created.id}/narration`);
-      setProject(p);
-      if (p.status === "failed") throw new Error(p.error ?? "Narration failed");
-
-      appendLog("Submitting scenes to kie.ai for animation…");
-      p = await postJSON(`/api/projects/${created.id}/animate`);
-      setProject(p);
-      if (p.status === "failed") throw new Error(p.error ?? "Animation submission failed");
-
-      appendLog("Waiting for animated clips…");
-      p = await pollAnimation(created.id);
-      if (p.status === "failed") throw new Error(p.error ?? "Animation failed");
-
-      appendLog("Assembling final video…");
-      p = await postJSON(`/api/projects/${created.id}/assemble`);
-      setProject(p);
-      if (p.status === "failed") throw new Error(p.error ?? "Assembly failed");
-
-      appendLog("Done!");
+      await runPipelineSteps(created.id, appendLog, setProject);
     } catch (err) {
       appendLog(`Error: ${err instanceof Error ? err.message : String(err)}`);
     } finally {
@@ -99,39 +91,185 @@ export default function Home() {
   }
 
   return (
-    <main className="flex-1 max-w-3xl mx-auto w-full px-6 py-16 space-y-10">
+    <>
+      <section className="relative overflow-hidden bg-[#1D1B3A] px-6 py-20 sm:py-28">
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          poster="/media/marketing/hero-poster.jpg"
+          className="absolute inset-0 h-full w-full object-cover opacity-40"
+        >
+          <source src="/media/marketing/hero-loop.mp4" type="video/mp4" />
+        </video>
+        <div className="absolute inset-0 bg-gradient-to-r from-[#1D1B3A] via-[#1D1B3A]/85 to-[#1D1B3A]/40" />
+
+        <div className="relative max-w-3xl mx-auto space-y-6">
+          <AudienceToggle active="sale" />
+          <p className="text-xs font-semibold uppercase tracking-widest text-[#00DEB0]">
+            AI-narrated property video
+          </p>
+          <h1 className="text-4xl sm:text-5xl font-semibold tracking-tight text-white leading-[1.1]">
+            Turn any listing into a cinematic promo video —{" "}
+            <span className="text-[#00DEB0]">no camera crew, no editor.</span>
+          </h1>
+          <p className="text-lg text-white/70 max-w-xl">
+            Paste a listing link or upload photos, and get a fully narrated,
+            AI-animated walkthrough back in minutes — voiced, scored, and
+            ready to share.
+          </p>
+          <div className="flex flex-wrap items-center gap-4 pt-2">
+            <Link
+              href="/create"
+              className="rounded-full bg-[#00DEB0] px-6 py-3 text-sm font-semibold text-[#1D1B3A] hover:bg-[#00DEB0]/90"
+            >
+              Try it free
+            </Link>
+            <a
+              href="#quick-generate"
+              className="rounded-full border border-white/30 px-6 py-3 text-sm font-medium text-white hover:bg-white/10"
+            >
+              Or paste a link below
+            </a>
+          </div>
+          <p className="text-sm text-white/50 pt-2">
+            Listings with video get up to 403% more inquiries than photo-only listings.
+          </p>
+          <p className="text-sm text-white/50">
+            <Link href="/pricing" className="underline underline-offset-2 hover:text-white">
+              See plans & pricing
+            </Link>
+          </p>
+        </div>
+      </section>
+
+      <section className="px-6 py-20">
+        <div className="max-w-5xl mx-auto space-y-10">
+          <div className="max-w-xl space-y-2">
+            <p className="text-xs font-semibold uppercase tracking-widest text-[#0F9B7A]">
+              Made with the app, start to finish
+            </p>
+            <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-neutral-900">
+              Every clip below is real output — hover to see it animate.
+            </h2>
+          </div>
+          <div className="grid gap-6 sm:grid-cols-2">
+            {BEFORE_AFTER_ROOMS.map((room) => (
+              <BeforeAfterCard
+                key={room.slug}
+                label={room.label}
+                beforeSrc={`/media/marketing/before-${room.slug}.jpg`}
+                afterSrc={`/media/marketing/after-${room.slug}.mp4`}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-neutral-50 px-6 py-20">
+        <div className="max-w-5xl mx-auto space-y-12">
+          <div className="max-w-xl space-y-2">
+            <p className="text-xs font-semibold uppercase tracking-widest text-[#0F9B7A]">
+              Three steps, no film crew required
+            </p>
+            <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-neutral-900">
+              From listing to finished video in about two minutes.
+            </h2>
+          </div>
+
+          <div className="grid gap-8 sm:grid-cols-3">
+            <div className="space-y-3">
+              <div className="rounded-xl border border-neutral-200 bg-white p-4 shadow-sm">
+                <div className="flex justify-start">
+                  <div className="max-w-[85%] rounded-lg bg-neutral-100 px-3 py-2 text-xs text-neutral-800">
+                    Hi! I&apos;ll help you put together a narrated property
+                    video. Do you have a listing URL, or would you rather
+                    upload photos directly?
+                  </div>
+                </div>
+              </div>
+              <h3 className="font-medium text-neutral-900">{STEPS[0].title}</h3>
+              <p className="text-sm text-neutral-500">{STEPS[0].body}</p>
+            </div>
+
+            <div className="space-y-3">
+              <div className="rounded-xl border border-neutral-200 bg-white p-4 shadow-sm space-y-2">
+                <div className="flex justify-end">
+                  <div className="max-w-[85%] rounded-lg bg-neutral-900 px-3 py-2 text-xs text-white">
+                    https://www.rightmove.co.uk/properties/155320229
+                  </div>
+                </div>
+                <div className="flex justify-start">
+                  <div className="max-w-[85%] rounded-lg bg-neutral-100 px-3 py-2 text-xs text-neutral-800">
+                    Found it! Avenue Road, St John&apos;s Wood — £49,950,000,
+                    10 bed / 8 bath, 12 photos + floorplan. Want to pick a
+                    narration voice before I generate?
+                  </div>
+                </div>
+              </div>
+              <h3 className="font-medium text-neutral-900">{STEPS[1].title}</h3>
+              <p className="text-sm text-neutral-500">{STEPS[1].body}</p>
+            </div>
+
+            <div className="space-y-3">
+              <div className="overflow-hidden rounded-xl border border-neutral-200 bg-black shadow-sm">
+                <video controls muted className="aspect-video w-full">
+                  <source src="/media/marketing/final-demo.mp4" type="video/mp4" />
+                </video>
+              </div>
+              <h3 className="font-medium text-neutral-900">{STEPS[2].title}</h3>
+              <p className="text-sm text-neutral-500">{STEPS[2].body}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <main id="quick-generate" className="flex-1 max-w-3xl mx-auto w-full px-6 py-16 space-y-10">
       <header className="space-y-2">
-        <h1 className="text-3xl font-semibold tracking-tight">Listing Video AI</h1>
+        <h2 className="text-2xl font-semibold tracking-tight">Quick generate</h2>
         <p className="text-neutral-500">
-          Paste a property listing URL, get a narrated promo video back — no
-          avatar, just scraped photos animated with kie.ai and voiced with
-          Inworld AI.
+          Already have a listing URL? Paste it below to generate a video
+          straight away, using the classic flow — no chat needed.
         </p>
       </header>
 
-      <form
-        className="flex gap-3"
-        onSubmit={(e) => {
-          e.preventDefault();
-          runPipeline();
-        }}
-      >
-        <input
-          type="url"
-          required
-          placeholder="https://www.rightmove.co.uk/properties/..."
-          value={sourceUrl}
-          onChange={(e) => setSourceUrl(e.target.value)}
-          className="flex-1 rounded-md border border-neutral-300 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900"
-        />
-        <button
-          type="submit"
-          disabled={running}
-          className="rounded-md bg-neutral-900 px-5 py-2 text-sm font-medium text-white disabled:opacity-40"
+      {loaded && !email && <EmailGate onSubmit={setEmail} />}
+
+      {email && (
+        <form
+          className="flex gap-3"
+          onSubmit={(e) => {
+            e.preventDefault();
+            runPipeline();
+          }}
         >
-          {running ? "Generating…" : "Generate video"}
-        </button>
-      </form>
+          <input
+            type="url"
+            required
+            placeholder="https://www.rightmove.co.uk/properties/..."
+            value={sourceUrl}
+            onChange={(e) => setSourceUrl(e.target.value)}
+            className="flex-1 rounded-md border border-neutral-300 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900"
+          />
+          <button
+            type="submit"
+            disabled={running}
+            className="rounded-md bg-neutral-900 px-5 py-2 text-sm font-medium text-white disabled:opacity-40"
+          >
+            {running ? "Generating…" : "Generate video"}
+          </button>
+        </form>
+      )}
+
+      {upgradeMessage && (
+        <div className="rounded-md border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+          {upgradeMessage}{" "}
+          <Link href="/pricing" className="font-medium underline underline-offset-2">
+            View plans
+          </Link>
+        </div>
+      )}
 
       {log.length > 0 && (
         <div className="rounded-md border border-neutral-200 bg-neutral-50 p-4 text-sm space-y-1 font-mono">
@@ -205,6 +343,7 @@ export default function Home() {
           )}
         </section>
       )}
-    </main>
+      </main>
+    </>
   );
 }
