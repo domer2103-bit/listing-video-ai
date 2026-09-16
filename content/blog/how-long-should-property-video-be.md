@@ -66,4 +66,4 @@ The data still supports it, particularly on mobile and on portals where a buyer 
 
 For most listings, 60 to 120 seconds is the right target — shorter for flats and social cuts, longer only when a property genuinely has more worth showing. Pacing that front-loads the strongest material matters more than hitting an exact runtime.
 
-**Generate a properly paced walkthrough automatically:** [Online Viewing](https://www.onlineviewing.co.uk) turns your listing photos into a narrated video, paced and timed for you.
+**Generate a properly paced walkthrough automatically:** [Online Viewing](https://www.onlineviewing.co.uk/for-sellers) turns your listing photos into a narrated video, paced and timed for you.

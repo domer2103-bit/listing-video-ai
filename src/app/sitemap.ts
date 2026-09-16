@@ -7,7 +7,8 @@ const BASE_URL = "https://onlineviewing.co.uk";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const routes = [
     "",
-    "/airbnb",
+    "/for-sellers",
+    "/for-airbnb-hosts",
     "/create",
     "/pricing",
     "/blog",

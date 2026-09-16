@@ -53,4 +53,4 @@ Starting with one or two current listings' existing photos, rather than committi
 
 While this specific scenario is illustrative rather than a real case study, the underlying mechanics it describes — using existing photos, minutes rather than days per video, and folding video into an existing listing process — are the same ones covered throughout this blog with genuine sourcing. The scenario is meant to make those mechanics concrete, not to stand in as proof on its own.
 
-**See what this could look like for your own listings:** [Online Viewing](https://www.onlineviewing.co.uk) — free to try.
+**See what this could look like for your own listings:** [Online Viewing](https://www.onlineviewing.co.uk/for-sellers) — free to try.

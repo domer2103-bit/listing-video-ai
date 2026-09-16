@@ -18,7 +18,7 @@ Assume a fairly ordinary set of listing photos: living room, kitchen, two bedroo
 
 ## Minute 1–2: Uploading or linking
 
-If the flat is already listed somewhere with photos published — Rightmove, Zoopla, an agent's site — the fastest starting point is often pasting that listing URL directly into a tool like [Online Viewing](https://www.onlineviewing.co.uk), which pulls the existing photos automatically. Otherwise, uploading the photo set directly from a folder takes about the same amount of time.
+If the flat is already listed on Rightmove, the fastest starting point is often pasting that listing URL directly into a tool like [Online Viewing](https://www.onlineviewing.co.uk), which pulls the existing photos automatically. For a listing on Zoopla, an agent's site, or anywhere else, uploading the same photo set directly from a folder takes about the same amount of time.
 
 ## Minute 2–4: Filling in the details
 
@@ -67,4 +67,4 @@ Yes, in most tools — a shorter cut for Instagram or TikTok is usually a quick 
 
 Turning a standard flat listing into a finished video tour is realistically a 10-minute task, not a multi-day production project — the photos already exist, and the tool handles the parts that used to require editing skill or equipment.
 
-**Try it with your own listing's photos:** [Online Viewing](https://www.onlineviewing.co.uk) — free to start, ready in minutes.
+**Try it with your own listing's photos:** [Online Viewing](https://www.onlineviewing.co.uk/for-sellers) — free to start, ready in minutes.

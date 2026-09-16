@@ -14,7 +14,7 @@ It's a reasonable question to ask how this actually works before trusting it wit
 
 ## The starting material: your photos
 
-The process starts with the photos you already have — either uploaded directly or pulled from an existing listing URL. Nothing needs to be reshot or specially prepared; the same photos already on Rightmove, Zoopla, or Airbnb work as the source material.
+The process starts with the photos you already have — either uploaded directly, or pulled automatically from a Rightmove listing URL. Nothing needs to be reshot or specially prepared; the same photos already published on Zoopla, Airbnb, or anywhere else work just as well, just via direct upload instead of a URL.
 
 ## Step 1: Sequencing
 

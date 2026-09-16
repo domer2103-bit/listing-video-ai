@@ -63,4 +63,4 @@ It's arguably more valuable for a budget listing — at the premium end, guests 
 
 In a search grid where every listing follows the same photography playbook, video is still a genuine differentiator simply because most hosts haven't added one yet. It sets expectations more accurately, builds trust faster, and gives a listing something to stand out with beyond another bright, decluttered photo of the same living room layout every competitor has too.
 
-**Turn your listing photos into a video today:** [Online Viewing](https://www.onlineviewing.co.uk) — free to start, ready in minutes.
+**Turn your listing photos into a video today:** [Online Viewing](https://www.onlineviewing.co.uk/for-airbnb-hosts) — free to start, ready in minutes.

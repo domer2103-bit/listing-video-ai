@@ -8,6 +8,15 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: path.join(__dirname),
   },
+  async redirects() {
+    return [
+      {
+        source: "/airbnb",
+        destination: "/for-airbnb-hosts",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

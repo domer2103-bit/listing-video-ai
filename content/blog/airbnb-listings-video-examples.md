@@ -61,4 +61,4 @@ Start from what makes your specific property different from the other listings n
 
 The best-performing Airbnb videos aren't necessarily the most expensively produced — they're the ones structured around a clear pattern that fits the specific property, rather than a generic room-by-room tour. Pick the pattern that matches what's actually distinctive about your listing, and build the video around that.
 
-**Generate a video structured around your listing's strengths:** [Online Viewing](https://www.onlineviewing.co.uk) — free to try.
+**Generate a video structured around your listing's strengths:** [Online Viewing](https://www.onlineviewing.co.uk/for-airbnb-hosts) — free to try.

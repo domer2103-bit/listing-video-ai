@@ -57,4 +57,4 @@ Somewhat — guests booking longer stays tend to spend more time evaluating a li
 
 Airbnb guests make fast, largely emotional decisions based on a brief visual scan, not a careful read of the full listing. Video works with that behaviour rather than against it — interrupting the scroll, communicating atmosphere quickly, and setting accurate expectations before a guest has spent more than a few seconds on the listing.
 
-**Give your listing a video that works in seconds, not minutes to produce:** [Online Viewing](https://www.onlineviewing.co.uk) — free to try.
+**Give your listing a video that works in seconds, not minutes to produce:** [Online Viewing](https://www.onlineviewing.co.uk/for-airbnb-hosts) — free to try.

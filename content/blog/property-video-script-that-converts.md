@@ -74,4 +74,4 @@ Not always — some agents prefer to let the listing's price field do that job a
 
 The difference between forgettable and persuasive property narration is almost entirely specificity. Generic language describes a category of property; specific details describe *this* property, and specific details are what a buyer actually remembers when deciding which viewing to book.
 
-**Generate narration automatically from your listing details:** [Online Viewing](https://www.onlineviewing.co.uk) — the more specific the details you provide, the better the result.
+**Generate narration automatically from your listing details:** [Online Viewing](https://www.onlineviewing.co.uk/for-sellers) — the more specific the details you provide, the better the result.

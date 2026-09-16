@@ -66,4 +66,4 @@ Generally the core video quality is similar across tiers — higher tiers add vo
 
 Video no longer requires a several-hundred-pound production budget per property. For most hosts, particularly those managing more than one listing, AI-generated video from existing photos offers a materially better cost-per-video than either hiring a videographer or investing the time to DIY it — often at a fraction of the cost of a single filmed walkthrough.
 
-**See the pricing for yourself:** [Online Viewing](https://www.onlineviewing.co.uk/pricing) — one free video to start, no commitment required.
+**See the pricing for yourself:** [Online Viewing](https://www.onlineviewing.co.uk/for-airbnb-hosts) — one free video to start, no commitment required.

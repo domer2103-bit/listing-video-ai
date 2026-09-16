@@ -57,4 +57,4 @@ Not entirely — some guests specifically look for a floor plan to understand la
 
 Photography and video aren't rival investments competing for the same budget — they're sequential ones that build on each other, with video typically generated directly from the photo set a host already has. The listings that book the most nights use both, in that order, rather than treating one as a substitute for the other.
 
-**Turn your existing Airbnb photos into video:** [Online Viewing](https://www.onlineviewing.co.uk) — free to try, ready in minutes.
+**Turn your existing Airbnb photos into video:** [Online Viewing](https://www.onlineviewing.co.uk/for-airbnb-hosts) — free to try, ready in minutes.

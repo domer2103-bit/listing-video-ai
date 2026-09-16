@@ -59,4 +59,4 @@ It tends to help most with properties where layout and flow are a selling point 
 
 Time on market is one of the clearest metrics video marketing moves, because its biggest effect lands exactly where it matters most — the first two weeks of a listing's life, when most buyer interest is generated. Adding video before or immediately after listing, rather than as an afterthought, is one of the highest-leverage changes available to a seller trying to move quickly.
 
-**Get a video ready before your next listing goes live:** [Online Viewing](https://www.onlineviewing.co.uk) — free to try, ready in minutes.
+**Get a video ready before your next listing goes live:** [Online Viewing](https://www.onlineviewing.co.uk/for-sellers) — free to try, ready in minutes.

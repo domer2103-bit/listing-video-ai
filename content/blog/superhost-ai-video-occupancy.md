@@ -59,4 +59,4 @@ There's no direct mechanical link, but the guest satisfaction improvements video
 
 Video won't single-handedly fix an occupancy problem rooted in pricing or search visibility, but as a conversion tool — and, over time, as a contributor to stronger reviews — it's one of the higher-leverage, lowest-effort additions available to an established host looking to improve performance across an existing portfolio.
 
-**Add video to your listings without adding to your workload:** [Online Viewing](https://www.onlineviewing.co.uk) — free to try, minutes to generate.
+**Add video to your listings without adding to your workload:** [Online Viewing](https://www.onlineviewing.co.uk/for-airbnb-hosts) — free to try, minutes to generate.

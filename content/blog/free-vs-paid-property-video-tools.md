@@ -64,4 +64,4 @@ Yes — the free tier is generally built exactly for this use case: one property
 
 Free tiers are genuinely useful, not just a limited trial — they're the right fit for a single listing. The case for paying is almost entirely about volume and production polish: more videos per month, a broader voice library, and features like establishing shots that matter more as your listing activity scales up.
 
-**Start with the free tier and see for yourself:** [Online Viewing](https://www.onlineviewing.co.uk) — one free video, no card required to try it.
+**Start with the free tier and see for yourself:** [Online Viewing](https://www.onlineviewing.co.uk/for-sellers) — one free video, no card required to try it.

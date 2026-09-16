@@ -71,4 +71,4 @@ Video will improve engagement over photos alone even with average photography, b
 
 AI-narrated video isn't a gimmick sitting next to real marketing — for agents who've adopted it, it's become the default output alongside photos, not an occasional upgrade. If you're still treating video as something reserved for a handful of premium listings, the tooling has moved past the point where that limitation makes sense.
 
-**See it on one of your own listings:** [Online Viewing](https://www.onlineviewing.co.uk) — paste a listing link and get a narrated video back in minutes, free to try.
+**See it on one of your own listings:** [Online Viewing](https://www.onlineviewing.co.uk/for-sellers) — paste a listing link and get a narrated video back in minutes, free to try.

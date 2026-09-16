@@ -55,4 +55,4 @@ It has a distinct look — photo-based motion rather than continuous real footag
 
 DIY filming isn't as easy as "no camera crew needed" makes it sound — it requires real skill and real time. AI-generated video from existing photos doesn't try to be a superior version of filmed video; it removes the barrier that keeps most sellers and hosts from having any video at all.
 
-**Skip the filming and editing entirely:** [Online Viewing](https://www.onlineviewing.co.uk) — free to try.
+**Skip the filming and editing entirely:** [Online Viewing](https://www.onlineviewing.co.uk/for-sellers) — free to try.

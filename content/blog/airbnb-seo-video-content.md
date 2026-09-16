@@ -53,4 +53,4 @@ Engagement-related effects likely scale with how genuinely engaging the video is
 
 Video's relationship to Airbnb search ranking is best understood through the confirmed factors it plausibly supports — conversion and review quality — rather than as a direct, guaranteed ranking boost. The honest case for video doesn't need the overclaim to be worth making.
 
-**Improve the factors that matter, starting with conversion:** [Online Viewing](https://www.onlineviewing.co.uk) — free to try.
+**Improve the factors that matter, starting with conversion:** [Online Viewing](https://www.onlineviewing.co.uk/for-airbnb-hosts) — free to try.

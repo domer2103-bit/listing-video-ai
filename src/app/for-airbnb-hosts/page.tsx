@@ -1,8 +1,22 @@
-"use client";
-
 import Link from "next/link";
+import type { Metadata } from "next";
 import { BeforeAfterCard } from "@/components/BeforeAfterCard";
 import { AudienceToggle } from "@/components/AudienceToggle";
+import { PLANS } from "@/lib/plans";
+
+export const metadata: Metadata = {
+  title: "Airbnb Listing Video — Increase Bookings with AI",
+  description:
+    "Turn your Airbnb photos into a booking-ready promo video with AI narration — no camera crew, no editor. Built for hosts managing one listing or many.",
+  alternates: { canonical: "/for-airbnb-hosts" },
+  openGraph: {
+    title: "Airbnb Listing Video — Increase Bookings with AI | Online Viewing",
+    description:
+      "Turn your Airbnb photos into a booking-ready promo video with AI narration — no camera crew, no editor.",
+    url: "https://onlineviewing.co.uk/for-airbnb-hosts",
+    type: "website",
+  },
+};
 
 const BEFORE_AFTER_ROOMS = [
   { label: "Living room", slug: "airbnb-living-room" },
@@ -26,7 +40,7 @@ const STEPS = [
   },
 ];
 
-export default function AirbnbLanding() {
+export default function ForAirbnbHosts() {
   return (
     <>
       <section className="relative overflow-hidden bg-[#1D1B3A] px-6 py-20 sm:py-28">
@@ -48,7 +62,7 @@ export default function AirbnbLanding() {
             AI-narrated Airbnb video
           </p>
           <h1 className="text-4xl sm:text-5xl font-semibold tracking-tight text-white leading-[1.1]">
-            Turn your listing photos into a booking-ready promo video —{" "}
+            Turn your Airbnb photos into a booking-ready promo video —{" "}
             <span className="text-[#FF5A5F]">no camera crew, no editor.</span>
           </h1>
           <p className="text-lg text-white/70 max-w-xl">
@@ -160,6 +174,70 @@ export default function AirbnbLanding() {
               <p className="text-sm text-neutral-500">{STEPS[2].body}</p>
             </div>
           </div>
+        </div>
+      </section>
+
+      <section className="px-6 py-20">
+        <div className="max-w-5xl mx-auto space-y-10">
+          <div className="max-w-xl space-y-2">
+            <p className="text-xs font-semibold uppercase tracking-widest text-[#D93A3F]">
+              Built for hosts, not just properties
+            </p>
+            <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-neutral-900">
+              Give guests a reason to book with confidence.
+            </h2>
+          </div>
+          <div className="grid gap-8 sm:grid-cols-3">
+            <div className="space-y-2">
+              <h3 className="font-medium text-neutral-900">Booking confidence</h3>
+              <p className="text-sm text-neutral-500">
+                Guests scrolling search results decide in seconds — a video that shows the space
+                in motion gives them more to go on than static photos alone before they commit.
+              </p>
+            </div>
+            <div className="space-y-2">
+              <h3 className="font-medium text-neutral-900">A conversion tool, not a magic fix</h3>
+              <p className="text-sm text-neutral-500">
+                Video won&apos;t fix an occupancy problem rooted in pricing or search visibility,
+                but it&apos;s one of the lower-effort additions available for improving how well an
+                existing listing converts views into bookings.
+              </p>
+            </div>
+            <div className="space-y-2">
+              <h3 className="font-medium text-neutral-900">Managing more than one listing</h3>
+              <p className="text-sm text-neutral-500">
+                Running a portfolio of short-term rentals? The Agency plan&apos;s batch generation
+                covers producing a video for each property without repeating the setup each time.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-neutral-50 px-6 py-20">
+        <div className="max-w-5xl mx-auto space-y-10">
+          <div className="max-w-xl space-y-2">
+            <p className="text-xs font-semibold uppercase tracking-widest text-[#D93A3F]">Pricing</p>
+            <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-neutral-900">
+              Start free, upgrade only if you need more.
+            </h2>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {Object.values(PLANS).map((plan) => (
+              <div key={plan.id} className="rounded-xl border border-neutral-200 bg-white p-5 space-y-1">
+                <p className="font-semibold text-neutral-900">{plan.name}</p>
+                <p className="text-xl font-semibold text-neutral-900">
+                  {plan.priceGBP === 0 ? "Free" : `£${plan.priceGBP}/mo`}
+                </p>
+                <p className="text-xs text-neutral-500">
+                  {plan.id === "free" ? "1 video, once" : `${plan.videosPerMonth} videos/month`}
+                </p>
+              </div>
+            ))}
+          </div>
+          <Link href="/pricing" className="inline-block text-sm font-medium text-[#D93A3F] underline underline-offset-2">
+            See full plan details →
+          </Link>
         </div>
       </section>
 

@@ -14,7 +14,7 @@ export function AudienceToggle({ active }: { active: "sale" | "airbnb" }) {
         For Sellers
       </Link>
       <Link
-        href="/airbnb"
+        href="/for-airbnb-hosts"
         className={`rounded-full px-4 py-1.5 font-medium transition-colors ${
           active === "airbnb" ? "bg-white text-[#1D1B3A]" : "text-white/60 hover:text-white"
         }`}

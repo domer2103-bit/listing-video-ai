@@ -71,4 +71,4 @@ Yes — most tools support generating or trimming a shorter cut specifically for
 
 Getting a booking-ready video doesn't require new equipment, new skills, or new photos — just the ones already in your listing, run through a tool that handles the animation, sequencing, and narration for you. The whole process, start to finish, typically takes a few minutes.
 
-**Try it on your own listing now:** [Online Viewing](https://www.onlineviewing.co.uk) — paste your Airbnb listing link and get a video back in minutes, free to start.
+**Try it on your own listing now:** [Online Viewing](https://www.onlineviewing.co.uk/for-airbnb-hosts) — paste your Airbnb listing link and get a video back in minutes, free to start.

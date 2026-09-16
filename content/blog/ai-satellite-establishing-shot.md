@@ -61,4 +61,4 @@ A few seconds is usually enough — 3 to 6 seconds as an opening beat before the
 
 An establishing shot gives a listing video the kind of cinematic opening that used to require a drone and a licensed operator. Used on the right listings — ones where location itself is part of the pitch — it adds genuine context a photo gallery can't provide, in the first few seconds a buyer watches.
 
-**See it in action:** [Online Viewing](https://www.onlineviewing.co.uk)'s Pro and Agency plans include an AI satellite establishing shot with every video.
+**See it in action:** [Online Viewing](https://www.onlineviewing.co.uk/for-sellers)'s Pro and Agency plans include an AI satellite establishing shot with every video.

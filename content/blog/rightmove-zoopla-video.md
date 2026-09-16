@@ -28,7 +28,7 @@ Being early relative to your local competition still matters. In areas where mos
 
 You don't need to relist or restart the marketing clock to add video. The practical process:
 
-1. **Use the listing's existing photos** — paste the live Rightmove or Zoopla URL into a tool like [Online Viewing](https://www.onlineviewing.co.uk), or upload the same photo set directly.
+1. **Use the listing's existing photos** — paste the live Rightmove URL into a tool like [Online Viewing](https://www.onlineviewing.co.uk), or upload the same photo set directly if the listing's on Zoopla or elsewhere.
 2. **Generate the narrated video** — this takes a couple of minutes, not days.
 3. **Upload the video through your agency's portal account** the same way you'd add or replace a photo, following Rightmove's or Zoopla's standard media upload process.
 
@@ -57,4 +57,4 @@ Yes — there's no reason the same walkthrough can't be uploaded to both, as wel
 
 Video is no longer a marginal upgrade on Rightmove and Zoopla — it changes how a listing shows up in search results before a buyer even clicks in. Adding one to a listing that's already live, using photos you already have, is a fast way to reset a stalling listing's momentum.
 
-**Add video to your next listing in minutes:** [Online Viewing](https://www.onlineviewing.co.uk) — paste your Rightmove or Zoopla listing link to get started, free.
+**Add video to your next listing in minutes:** [Online Viewing](https://www.onlineviewing.co.uk/for-sellers) — paste your Rightmove listing link, or upload photos directly, to get started free.

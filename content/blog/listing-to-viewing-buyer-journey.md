@@ -55,4 +55,4 @@ The stages are broadly similar, though an Airbnb booking decision typically happ
 
 A buyer's journey from first seeing a listing to booking a viewing has several distinct stages, and video's biggest leverage sits specifically at the evaluation stage — where a buyer decides whether a listing is worth the cost of an in-person visit. Understanding where your listing is actually losing people makes it easier to see exactly why video helps.
 
-**Strengthen the stage where most listings lose buyers:** [Online Viewing](https://www.onlineviewing.co.uk) — free to try.
+**Strengthen the stage where most listings lose buyers:** [Online Viewing](https://www.onlineviewing.co.uk/for-sellers) — free to try.

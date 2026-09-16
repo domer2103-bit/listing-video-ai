@@ -6,6 +6,12 @@ export function Footer() {
       <div className="max-w-5xl mx-auto flex flex-wrap items-center justify-between gap-3">
         <span>&copy; {new Date().getFullYear()} Online Viewing</span>
         <div className="flex gap-4">
+          <Link href="/for-sellers" className="hover:text-neutral-900">
+            For Sellers
+          </Link>
+          <Link href="/for-airbnb-hosts" className="hover:text-neutral-900">
+            For Airbnb Hosts
+          </Link>
           <Link href="/blog" className="hover:text-neutral-900">
             Blog
           </Link>
