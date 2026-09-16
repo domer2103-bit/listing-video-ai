@@ -9,6 +9,9 @@ export function Footer() {
           <Link href="/blog" className="hover:text-neutral-900">
             Blog
           </Link>
+          <Link href="/compare" className="hover:text-neutral-900">
+            Compare
+          </Link>
           <Link href="/privacy" className="hover:text-neutral-900">
             Privacy Policy
           </Link>

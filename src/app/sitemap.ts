@@ -1,10 +1,21 @@
 import type { MetadataRoute } from "next";
 import { getAllPostsMeta } from "@/lib/blog";
+import { COMPETITORS } from "@/lib/compareData";
 
 const BASE_URL = "https://onlineviewing.co.uk";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const routes = ["", "/airbnb", "/create", "/pricing", "/blog", "/privacy", "/terms"];
+  const routes = [
+    "",
+    "/airbnb",
+    "/create",
+    "/pricing",
+    "/blog",
+    "/compare",
+    "/compare/best-ai-property-video-tools",
+    "/privacy",
+    "/terms",
+  ];
   const staticEntries = routes.map((route) => ({
     url: `${BASE_URL}${route}`,
     lastModified: new Date(),
@@ -16,5 +27,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: new Date(`${post.date}T00:00:00Z`),
   }));
 
-  return [...staticEntries, ...postEntries];
+  const compareEntries = COMPETITORS.map((c) => ({
+    url: `${BASE_URL}/compare/${c.slug}`,
+    lastModified: new Date(`${c.lastVerified}T00:00:00Z`),
+  }));
+
+  return [...staticEntries, ...postEntries, ...compareEntries];
 }
