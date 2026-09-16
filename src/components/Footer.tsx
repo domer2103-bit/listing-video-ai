@@ -15,6 +15,9 @@ export function Footer() {
           <Link href="/blog" className="hover:text-neutral-900">
             Blog
           </Link>
+          <Link href="/tools/video-ready-checklist" className="hover:text-neutral-900">
+            Photo Checklist
+          </Link>
           <Link href="/compare" className="hover:text-neutral-900">
             Compare
           </Link>

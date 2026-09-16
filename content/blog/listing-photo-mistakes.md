@@ -63,6 +63,8 @@ Video helps cover for photo weaknesses, but it's not a substitute for getting th
 - Get the exterior shot right, since it's almost always the first thing a buyer sees.
 - Include at least one photo that shows scale accurately — a doorway or hallway in frame helps buyers judge room size honestly.
 
+Not sure if your current photo set clears the bar? [Check it against this free checklist](https://www.onlineviewing.co.uk/tools/video-ready-checklist) — tick what applies and get an instant score plus specific fixes.
+
 ## Turning your existing photos into video
 
 If you've already got a decent photo set but haven't added video, tools like [Online Viewing](https://www.onlineviewing.co.uk) can generate a narrated walkthrough from those exact photos in a couple of minutes — no reshoot required. It's often the fastest single improvement available to a listing that's already live and underperforming.
