@@ -22,7 +22,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "A valid email is required" }, { status: 400 });
   }
 
-  const user = await getOrCreateUser(email);
+  const referralCode = request.cookies.get("lva_ref")?.value;
+  const user = await getOrCreateUser(email, referralCode);
   const quota = canGenerate(user);
   if (!quota.allowed) {
     return NextResponse.json({ error: quota.reason, upgradeRequired: true }, { status: 402 });

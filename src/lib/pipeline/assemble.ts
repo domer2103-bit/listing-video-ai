@@ -22,7 +22,12 @@ const FINAL_DIR = path.join(MEDIA_DIR, "final");
  * easier to art-direct than ffmpeg filter chains, at the cost of an extra
  * render pipeline. Worth revisiting once the raw pipeline works end to end.
  */
-export async function assembleFinalVideo(project: Project): Promise<string> {
+const WATERMARK_TEXT = "Made with Online Viewing · onlineviewing.co.uk";
+
+export async function assembleFinalVideo(
+  project: Project,
+  opts: { isFreeTier?: boolean } = {}
+): Promise<string> {
   if (!project.scenes || project.scenes.length === 0) {
     throw new Error("Project has no scenes to assemble");
   }
@@ -48,6 +53,7 @@ export async function assembleFinalVideo(project: Project): Promise<string> {
       clipPath,
       audioPath,
       onScreenText: canDrawtext ? scene.onScreenText : undefined,
+      watermark: canDrawtext && opts.isFreeTier ? WATERMARK_TEXT : undefined,
       introSilenceSec: scene.introSilenceSec,
       outPath,
     });
@@ -111,10 +117,24 @@ function getDurationSec(filePath: string): Promise<number> {
  * onset so it starts when the orbit footage begins instead of overlapping
  * the silent zoom-in — padding accounts for the delayed audio's later end.
  */
+// ffmpeg's filtergraph mini-language: a backslash-escaped quote inside an
+// already-open quoted string does NOT produce a literal apostrophe — it
+// prematurely closes the string, leaving everything after it (commas,
+// colons) parsed as filtergraph syntax instead of text. The documented
+// technique is to close the quote, escape a literal quote outside it, then
+// reopen: '...'\''...'
+function escapeDrawtext(text: string): string {
+  return text.replace(/'/g, "'\\''").replace(/:/g, "\\:");
+}
+
 async function muxSceneClip(opts: {
   clipPath: string;
   audioPath: string;
   onScreenText?: string;
+  /** Free-tier-only brand credit, burned into the bottom-right corner —
+   * small and semi-transparent so it doesn't compete with the caption
+   * (bottom-center, much larger) or the footage itself. */
+  watermark?: string;
   introSilenceSec?: number;
   outPath: string;
 }): Promise<void> {
@@ -134,15 +154,15 @@ async function muxSceneClip(opts: {
       videoFilters.push(`tpad=stop_mode=clone:stop_duration=${padSec.toFixed(2)}`);
     }
     if (opts.onScreenText) {
-      // ffmpeg's filtergraph mini-language: a backslash-escaped quote
-      // inside an already-open quoted string does NOT produce a literal
-      // apostrophe — it prematurely closes the string, leaving everything
-      // after it (commas, colons) parsed as filtergraph syntax instead of
-      // text. The documented technique is to close the quote, escape a
-      // literal quote outside it, then reopen: '...'\''...'
-      const safeText = opts.onScreenText.replace(/'/g, "'\\''").replace(/:/g, "\\:");
+      const safeText = escapeDrawtext(opts.onScreenText);
       videoFilters.push(
         `drawtext=text='${safeText}':fontcolor=white:fontsize=48:box=1:boxcolor=black@0.4:boxborderw=20:x=(w-text_w)/2:y=h-140`
+      );
+    }
+    if (opts.watermark) {
+      const safeWatermark = escapeDrawtext(opts.watermark);
+      videoFilters.push(
+        `drawtext=text='${safeWatermark}':fontcolor=white@0.7:fontsize=20:x=w-text_w-20:y=h-40`
       );
     }
     if (videoFilters.length > 0) {
