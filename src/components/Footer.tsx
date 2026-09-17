@@ -1,10 +1,14 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export function Footer() {
   return (
     <footer className="border-t border-neutral-200 px-6 py-6 text-sm text-neutral-500">
       <div className="max-w-5xl mx-auto flex flex-wrap items-center justify-between gap-3">
-        <span>&copy; {new Date().getFullYear()} Online Viewing</span>
+        <span className="flex items-center gap-2">
+          <Image src="/brand/wordmark-light.png" alt="Online Viewing" width={98} height={24} />
+          <span>&copy; {new Date().getFullYear()}</span>
+        </span>
         <div className="flex gap-4">
           <Link href="/for-sellers" className="hover:text-neutral-900">
             For Sellers
