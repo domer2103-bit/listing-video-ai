@@ -70,6 +70,7 @@ export default function PrivacyPolicy() {
           <li><strong>Google</strong> — satellite imagery (Maps) used for establishing shots.</li>
           <li><strong>Amazon Web Services</strong> — cloud video rendering infrastructure.</li>
           <li><strong>Hostinger</strong> — hosts the Service.</li>
+          <li><strong>Cloudflare</strong> — Web Analytics: anonymous, cookieless pageview counts.</li>
         </ul>
         <p>
           Each of these providers processes data only as needed to perform their function and is
@@ -80,10 +81,15 @@ export default function PrivacyPolicy() {
       <section className="space-y-3">
         <h2 className="text-xl font-semibold text-neutral-900">Cookies &amp; local storage</h2>
         <p>
-          We don’t use advertising or analytics cookies. We use your browser’s local storage —
-          functionally similar to a cookie — to remember your email address between visits, so
-          the Service knows who you are without asking again. This is strictly necessary for the
-          Service to work and isn’t used for tracking or advertising.
+          We don’t use advertising cookies. We use your browser’s local storage — functionally
+          similar to a cookie — to remember your email address between visits, so the Service
+          knows who you are without asking again. This is strictly necessary for the Service to
+          work and isn’t used for tracking or advertising. We also use Cloudflare’s cookieless analytics
+          for anonymous pageview counts, and run our own self-hosted analytics (Plausible) on our
+          own server to see, in aggregate, which pages and features are actually used, e.g. which
+          comparison page or call-to-action was clicked. Because it’s self-hosted, this data never
+          leaves our own infrastructure — it isn’t shared with any analytics company, doesn’t
+          identify you individually, and isn’t used for advertising.
         </p>
       </section>
 

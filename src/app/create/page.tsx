@@ -7,6 +7,7 @@ import { CURATED_VOICES, voiceSampleUrl } from "@/lib/voices";
 import { useStoredEmail } from "@/lib/useStoredEmail";
 import { EmailGate } from "@/components/EmailGate";
 import { ChatBubbleContent } from "@/components/ChatBubbleContent";
+import { trackEvent } from "@/lib/analytics";
 
 const STAGE_LABELS: Record<string, string> = {
   created: "Created",
@@ -57,6 +58,7 @@ export default function CreateChat() {
           return;
         }
         if (!res.ok) throw new Error(data.error ?? "Failed to start chat");
+        if (data.referralSignup) trackEvent("referral_signup");
         const session = data.session as ChatSession;
         setSessionId(session.id);
         setMessages(session.messages);

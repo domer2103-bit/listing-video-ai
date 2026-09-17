@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { trackEvent } from "@/lib/analytics";
 
 interface ChecklistItem {
   id: string;
@@ -55,6 +56,7 @@ function getResult(checkedCount: number, total: number) {
   const ratio = checkedCount / total;
   if (ratio >= 0.85) {
     return {
+      bucket: "ready" as const,
       heading: "Great — your photos are video-ready.",
       body: "This photo set has what it needs for a strong narrated walkthrough. You're ready to generate.",
       color: "text-[#0F9B7A]",
@@ -63,6 +65,7 @@ function getResult(checkedCount: number, total: number) {
   }
   if (ratio >= 0.4) {
     return {
+      bucket: "needs_fixes" as const,
       heading: "A few quick fixes would help.",
       body: "You've got a workable set, but addressing the gaps below will noticeably improve the finished video.",
       color: "text-amber-700",
@@ -70,6 +73,7 @@ function getResult(checkedCount: number, total: number) {
     };
   }
   return {
+    bucket: "reshoot" as const,
     heading: "Consider retaking a few photos first.",
     body: "There's enough missing here that a short reshoot will make a bigger difference than jumping straight to video.",
     color: "text-red-700",
@@ -133,6 +137,9 @@ export function VideoReadyChecklist() {
         </p>
         <Link
           href="/create"
+          onClick={() =>
+            trackEvent("checklist_completed", { bucket: result.bucket, checkedCount, total: CHECKLIST_ITEMS.length })
+          }
           className="inline-block rounded-full bg-[#00DEB0] px-6 py-3 text-sm font-semibold text-[#1D1B3A] hover:bg-[#00DEB0]/90"
         >
           Try it free

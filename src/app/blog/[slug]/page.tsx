@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getAllSlugs, getPostBySlug, Persona } from "@/lib/blog";
+import { BlogPostBody } from "@/components/BlogPostBody";
 
 const PERSONA_STYLE: Record<Persona, { label: string; text: string; bg: string }> = {
   Sellers: { label: "For Sellers", text: "text-[#0F9B7A]", bg: "bg-[#00DEB0]/10" },
@@ -122,7 +123,9 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
         <p className="text-lg text-neutral-500">{post.meta_description}</p>
       </header>
 
-      <div
+      <BlogPostBody
+        html={post.html}
+        slug={post.slug}
         className="text-neutral-700 space-y-4 leading-relaxed
           [&_h1]:text-3xl [&_h1]:font-semibold [&_h1]:text-neutral-900 [&_h1]:tracking-tight [&_h1]:mt-10 [&_h1]:mb-2
           [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:text-neutral-900 [&_h2]:mt-8 [&_h2]:mb-2
@@ -135,7 +138,6 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
           [&_a]:text-[#0F9B7A] [&_a]:underline [&_a]:underline-offset-2
           [&_blockquote]:border-l-2 [&_blockquote]:border-neutral-200 [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-neutral-600
           [&_code]:bg-neutral-100 [&_code]:rounded [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:text-sm"
-        dangerouslySetInnerHTML={{ __html: post.html }}
       />
     </main>
   );

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { COMPETITORS } from "@/lib/compareData";
+import { TrackedCtaLink } from "@/components/TrackedCtaLink";
 
 export const metadata: Metadata = {
   title: "Compare",
@@ -55,9 +56,14 @@ export default function CompareIndex() {
       <p className="text-sm text-neutral-400">
         Pricing and features are sourced from each competitor&apos;s own public site and may have
         changed since — each page notes when it was last checked. Ready to try it yourself?{" "}
-        <Link href="/create" className="text-[#0F9B7A] underline underline-offset-2">
+        <TrackedCtaLink
+          href="/create"
+          source="compare"
+          location="bottom"
+          className="text-[#0F9B7A] underline underline-offset-2"
+        >
           Start a free video
-        </Link>
+        </TrackedCtaLink>
         .
       </p>
     </main>

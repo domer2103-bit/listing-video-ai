@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { nanoid } from "nanoid";
 import { Audience, ChatSession } from "@/lib/types";
 import { saveChatSession } from "@/lib/chatStore";
-import { getOrCreateUser, canGenerate } from "@/lib/userStore";
+import { getOrCreateUser, getUser, canGenerate } from "@/lib/userStore";
 
 const GREETINGS: Record<Audience, string> = {
   sale: "Hi! I'll help you put together a narrated property video. Do you have a listing URL (Rightmove, etc.), or would you rather upload photos directly?",
@@ -21,7 +21,9 @@ export async function POST(request: NextRequest) {
   const resolvedAudience: Audience = audience === "airbnb" ? "airbnb" : "sale";
 
   const referralCode = request.cookies.get("lva_ref")?.value;
+  const existedBefore = await getUser(email);
   const user = await getOrCreateUser(email, referralCode);
+  const referralSignup = !existedBefore && Boolean(user.referredBy);
   const quota = canGenerate(user);
   if (!quota.allowed) {
     return NextResponse.json({ error: quota.reason, upgradeRequired: true }, { status: 402 });
@@ -38,5 +40,5 @@ export async function POST(request: NextRequest) {
     audience: resolvedAudience,
   };
   await saveChatSession(session);
-  return NextResponse.json({ session }, { status: 201 });
+  return NextResponse.json({ session, referralSignup }, { status: 201 });
 }

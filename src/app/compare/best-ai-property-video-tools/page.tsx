@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { COMPETITORS, ONLINE_VIEWING_SUMMARY_ROW, ROUNDUP_EXTRAS, NOT_PUBLIC } from "@/lib/compareData";
+import { TrackedCtaLink } from "@/components/TrackedCtaLink";
 
 export const metadata: Metadata = {
   title: "Best AI Property Video Tools",
@@ -120,12 +121,14 @@ export default function BestToolsRoundup() {
 
       <div className="rounded-xl border border-neutral-200 bg-neutral-50 p-6 text-center space-y-3">
         <p className="text-neutral-700">See how Online Viewing handles your own listing.</p>
-        <Link
+        <TrackedCtaLink
           href="/create"
+          source="compare/best-ai-property-video-tools"
+          location="bottom"
           className="inline-block rounded-full bg-[#00DEB0] px-6 py-3 text-sm font-semibold text-[#1D1B3A] hover:bg-[#00DEB0]/90"
         >
           Try it free
-        </Link>
+        </TrackedCtaLink>
       </div>
     </main>
   );

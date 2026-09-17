@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { BeforeAfterCard } from "@/components/BeforeAfterCard";
 import { AudienceToggle } from "@/components/AudienceToggle";
+import { TrackedCtaLink } from "@/components/TrackedCtaLink";
 import { PLANS } from "@/lib/plans";
 
 export const metadata: Metadata = {
@@ -71,12 +72,14 @@ export default function ForSellers() {
             voiced, scored, and ready to share.
           </p>
           <div className="flex flex-wrap items-center gap-4 pt-2">
-            <Link
+            <TrackedCtaLink
               href="/create"
+              source="for-sellers"
+              location="hero"
               className="rounded-full bg-[#00DEB0] px-6 py-3 text-sm font-semibold text-[#1D1B3A] hover:bg-[#00DEB0]/90"
             >
               Try it free
-            </Link>
+            </TrackedCtaLink>
             <a
               href="#how-it-works"
               className="rounded-full border border-white/30 px-6 py-3 text-sm font-medium text-white hover:bg-white/10"
@@ -248,12 +251,14 @@ export default function ForSellers() {
             Paste a listing link or upload photos and let the assistant
             handle the rest — no editing software, no camera crew.
           </p>
-          <Link
+          <TrackedCtaLink
             href="/create"
+            source="for-sellers"
+            location="bottom"
             className="inline-block rounded-full bg-[#00DEB0] px-6 py-3 text-sm font-semibold text-[#1D1B3A] hover:bg-[#00DEB0]/90"
           >
             Try it free
-          </Link>
+          </TrackedCtaLink>
         </div>
       </section>
     </>

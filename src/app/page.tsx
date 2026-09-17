@@ -8,6 +8,7 @@ import { BeforeAfterCard } from "@/components/BeforeAfterCard";
 import { AudienceToggle } from "@/components/AudienceToggle";
 import { useStoredEmail } from "@/lib/useStoredEmail";
 import { EmailGate } from "@/components/EmailGate";
+import { trackEvent } from "@/lib/analytics";
 
 const BEFORE_AFTER_ROOMS = [
   { label: "Reception room", slug: "reception" },
@@ -95,6 +96,7 @@ export default function Home() {
         return;
       }
       if (!res.ok) throw new Error(data.error ?? "Failed to create project");
+      if (data.referralSignup) trackEvent("referral_signup");
       const created = data.project as Project;
       setProject(created);
       if (created.status === "failed") throw new Error(created.error ?? "Scrape failed");

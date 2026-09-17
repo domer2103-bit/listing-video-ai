@@ -56,6 +56,15 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           data-cf-beacon='{"token": "d0836dd004c441dea7ffde8ec0d05d77"}'
           strategy="afterInteractive"
         />
+        <Script
+          async
+          src="https://analytics.onlineviewing.co.uk/js/pa-bQEbFaXeqCTacOW4dPg4b.js"
+          strategy="afterInteractive"
+        />
+        <Script id="plausible-init" strategy="afterInteractive">
+          {`window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+plausible.init()`}
+        </Script>
       </body>
     </html>
   );

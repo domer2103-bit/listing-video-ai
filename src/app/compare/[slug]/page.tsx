@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { COMPETITORS, NOT_PUBLIC, getCompetitorBySlug } from "@/lib/compareData";
+import { TrackedCtaLink } from "@/components/TrackedCtaLink";
 
 export async function generateStaticParams() {
   return COMPETITORS.map((c) => ({ slug: c.slug }));
@@ -106,12 +107,14 @@ export default async function ComparePage({ params }: { params: Promise<{ slug: 
 
       <div className="rounded-xl border border-neutral-200 bg-neutral-50 p-6 text-center space-y-3">
         <p className="text-neutral-700">See how Online Viewing handles your own listing.</p>
-        <Link
+        <TrackedCtaLink
           href="/create"
+          source={`compare/${competitor.slug}`}
+          location="bottom"
           className="inline-block rounded-full bg-[#00DEB0] px-6 py-3 text-sm font-semibold text-[#1D1B3A] hover:bg-[#00DEB0]/90"
         >
           Try it free
-        </Link>
+        </TrackedCtaLink>
       </div>
     </main>
   );

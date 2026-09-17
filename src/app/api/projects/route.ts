@@ -3,7 +3,7 @@ import { nanoid } from "nanoid";
 import { Project } from "@/lib/types";
 import { saveProject, listProjects } from "@/lib/store";
 import { scrapeListing } from "@/lib/scrapers";
-import { canGenerate, getOrCreateUser, recordGenerationUsed } from "@/lib/userStore";
+import { canGenerate, getOrCreateUser, getUser, recordGenerationUsed } from "@/lib/userStore";
 
 export async function GET() {
   const projects = await listProjects();
@@ -23,7 +23,9 @@ export async function POST(request: NextRequest) {
   }
 
   const referralCode = request.cookies.get("lva_ref")?.value;
+  const existedBefore = await getUser(email);
   const user = await getOrCreateUser(email, referralCode);
+  const referralSignup = !existedBefore && Boolean(user.referredBy);
   const quota = canGenerate(user);
   if (!quota.allowed) {
     return NextResponse.json({ error: quota.reason, upgradeRequired: true }, { status: 402 });
@@ -51,5 +53,5 @@ export async function POST(request: NextRequest) {
   }
 
   await saveProject(project);
-  return NextResponse.json({ project }, { status: project.status === "failed" ? 500 : 201 });
+  return NextResponse.json({ project, referralSignup }, { status: project.status === "failed" ? 500 : 201 });
 }
